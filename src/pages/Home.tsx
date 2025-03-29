@@ -1,6 +1,7 @@
 
 import { CalendarDays, ChevronRight, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 const featuredExperiences = [
   {
@@ -62,6 +63,20 @@ const upcomingEvents = [
 ];
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  const handleEventClick = (eventId: number) => {
+    navigate(`/events/${eventId}`);
+  };
+
+  const handleViewAllEvents = () => {
+    navigate('/events');
+  };
+
+  const handleViewAllExperiences = () => {
+    navigate('/activities');
+  };
+
   return (
     <div className="pb-20">
       <section className="mb-8 pt-4">
@@ -69,7 +84,10 @@ const Home = () => {
           <div className="rounded-2xl bg-gradient-to-r from-sea-DEFAULT to-sea-dark text-white p-6 h-44 flex flex-col justify-between">
             <h2 className="text-2xl font-bold">Doživite Dalmaciju</h2>
             <p className="text-white/80 mb-3">Otkrijte vansezonske doživljaje</p>
-            <button className="bg-white text-sea-DEFAULT px-4 py-2 rounded-full text-sm font-medium inline-flex items-center">
+            <button 
+              className="bg-white text-sea-DEFAULT px-4 py-2 rounded-full text-sm font-medium inline-flex items-center"
+              onClick={handleViewAllExperiences}
+            >
               Istražite sve
               <ChevronRight size={16} className="ml-1" />
             </button>
@@ -84,7 +102,10 @@ const Home = () => {
               <CalendarDays size={20} className="mr-2 text-sea-DEFAULT" />
               Događaji ovog tjedna
             </h2>
-            <button className="text-sea-DEFAULT text-sm font-medium flex items-center">
+            <button 
+              className="text-sea-DEFAULT text-sm font-medium flex items-center"
+              onClick={handleViewAllEvents}
+            >
               Svi događaji
               <ChevronRight size={16} />
             </button>
@@ -92,7 +113,11 @@ const Home = () => {
           
           <div className="space-y-3">
             {upcomingEvents.map((event) => (
-              <div key={event.id} className="p-4 border border-gray-200 dark:border-gray-800 rounded-lg flex items-start animate-fade-in">
+              <div 
+                key={event.id} 
+                className="p-4 border border-gray-200 dark:border-gray-800 rounded-lg flex items-start animate-fade-in cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors active:bg-gray-100 dark:active:bg-gray-800"
+                onClick={() => handleEventClick(event.id)}
+              >
                 <div className="bg-dalmatian-stone dark:bg-gray-800 rounded-md w-14 h-14 flex flex-col items-center justify-center mr-4 flex-shrink-0">
                   <span className="text-xs text-gray-500 dark:text-gray-400">OŽU</span>
                   <span className="text-lg font-bold">{event.date.split('.')[0]}</span>
@@ -115,7 +140,10 @@ const Home = () => {
         <div className="split-escape-container">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Top vansezonski doživljaji</h2>
-            <button className="text-sea-DEFAULT text-sm font-medium flex items-center">
+            <button 
+              className="text-sea-DEFAULT text-sm font-medium flex items-center"
+              onClick={handleViewAllExperiences}
+            >
               Vidi sve
               <ChevronRight size={16} />
             </button>
@@ -123,7 +151,11 @@ const Home = () => {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {featuredExperiences.map((exp) => (
-              <Card key={exp.id} className="overflow-hidden border-none shadow-md animate-fade-in hover:shadow-lg transition-shadow">
+              <Card 
+                key={exp.id} 
+                className="overflow-hidden border-none shadow-md animate-fade-in hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => navigate(`/activities/${exp.id}`)}
+              >
                 <div className="relative h-48">
                   <img 
                     src={exp.image} 
@@ -162,7 +194,10 @@ const Home = () => {
               Prijavite se ili dodajte vaše interese za personalizirane preporuke 
               aktivnosti i događaja u Dalmaciji.
             </p>
-            <button className="bg-sea-DEFAULT text-white px-4 py-2 rounded-full text-sm font-medium">
+            <button 
+              className="bg-sea-DEFAULT text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-sea-dark transition-colors"
+              onClick={() => navigate('/profile')}
+            >
               Prijava / Registracija
             </button>
           </div>
