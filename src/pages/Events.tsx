@@ -3,6 +3,7 @@ import { CalendarDays, Calendar, ChevronLeft, ChevronRight, MapPin } from "lucid
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const weekdays = ["Pon", "Uto", "Sri", "Čet", "Pet", "Sub", "Ned"];
 
@@ -16,7 +17,7 @@ const currentWeekDates = [
   { day: "Ned", date: "26", month: "03", events: 1 },
 ];
 
-const events = [
+export const events = [
   {
     id: 1,
     title: "Festival maslinovog ulja",
@@ -24,6 +25,10 @@ const events = [
     time: "10:00 - 18:00",
     location: "Brač, luka",
     image: "https://source.unsplash.com/random/600x400/?olive,festival",
+    description: "Festival maslinovog ulja okuplja najbolje proizvođače iz cijele Dalmacije. Posjetitelji mogu kušati različite sorte maslinovog ulja, sudjelovati u radionicama o proizvodnji i korištenju maslinovog ulja, te kupiti proizvode direktno od proizvođača.",
+    organizer: "Turistička zajednica otoka Brača",
+    contact: "+385 21 123 456",
+    price: "Besplatno",
   },
   {
     id: 2,
@@ -32,6 +37,10 @@ const events = [
     time: "17:00 - 21:00",
     location: "Split, Dioklecijanova palača",
     image: "https://source.unsplash.com/random/600x400/?wine",
+    description: "Degustacija dalmatinskih vina predstavlja najbolja vina iz regije. Posjetitelji mogu kušati preko 50 različitih vrsta vina od 20 različitih proizvođača, uz stručno vođenje sommeliera koji će objasniti karakteristike svakog vina.",
+    organizer: "Udruga vinara Dalmacije",
+    contact: "+385 21 234 567",
+    price: "150 kn",
   },
   {
     id: 3,
@@ -40,11 +49,16 @@ const events = [
     time: "12:00 - 15:00",
     location: "Trogir, stari grad",
     image: "https://source.unsplash.com/random/600x400/?cooking,mediterranean",
+    description: "Naučite pripremati tradicionalna dalmatinska jela uz vodstvo iskusnih lokalnih kuhara. Radionica uključuje pripremu pašticade, crnog rižota, brudet i dalmatinske pašte. Nakon kuhanja, sudionici zajedno uživaju u pripremljenim jelima uz lokalno vino.",
+    organizer: "Kulinarski institut Mediteran",
+    contact: "+385 21 345 678",
+    price: "200 kn",
   },
 ];
 
 const Events = () => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleDateClick = (day: typeof currentWeekDates[0]) => {
     setSelectedDate(day.date);
@@ -56,7 +70,7 @@ const Events = () => {
   };
 
   const handleEventClick = (event: typeof events[0]) => {
-    toast.success(`Detalji događaja: ${event.title}`);
+    navigate(`/events/${event.id}`);
   };
 
   const handleCalendarClick = () => {
@@ -157,7 +171,7 @@ const Events = () => {
                     className="bg-sea-DEFAULT text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-sea-dark active:bg-sea-dark/90 transition-colors"
                     onClick={(e) => {
                       e.stopPropagation();
-                      toast.success(`Otvaranje detalja: ${event.title}`);
+                      handleEventClick(event);
                     }}
                   >
                     Detalji događaja

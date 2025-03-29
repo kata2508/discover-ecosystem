@@ -10,6 +10,7 @@ import Explore from "./pages/Explore";
 import Activities from "./pages/Activities";
 import ActivityDetail from "./pages/ActivityDetail";
 import Events from "./pages/Events";
+import EventDetail from "./pages/EventDetail";
 import Interests from "./pages/Interests";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/activities" element={<Activities />} />
             <Route path="/activities/:id" element={<ActivityDetail />} />
             <Route path="/events" element={<Events />} />
+            <Route path="/events/:id" element={<EventDetail />} />
             <Route path="/interests" element={<Interests />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
