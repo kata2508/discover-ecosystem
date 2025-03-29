@@ -2,8 +2,20 @@
 import { ChevronRight, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "sonner";
+import { useState } from "react";
 
-const activities = [
+type Activity = {
+  id: number;
+  title: string;
+  image: string;
+  category: string;
+  duration: string;
+  difficulty: string;
+  rating: number;
+};
+
+const activities: Activity[] = [
   {
     id: 1,
     title: "Planinarenje na Mosor",
@@ -58,12 +70,23 @@ const gastroActivities = activities.filter(a => a.category === "gastro");
 const wellnessActivities = activities.filter(a => a.category === "wellness");
 
 const Activities = () => {
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+
+  const handleSeeAll = (category: string) => {
+    setActiveCategory(category);
+    toast.info(`Pregled svih aktivnosti za kategoriju: ${category}`);
+  };
+
+  const handleActivityClick = (activity: Activity) => {
+    toast.success(`Odabrali ste: ${activity.title}`);
+  };
+
   return (
     <div className="pb-20">
       <div className="split-escape-container pt-4">
         <h1 className="text-2xl font-bold mb-6">Aktivnosti i iskustva</h1>
         
-        <Tabs defaultValue="all" className="mb-6">
+        <Tabs value={activeCategory} onValueChange={setActiveCategory} className="mb-6">
           <TabsList className="grid grid-cols-5 mb-4">
             <TabsTrigger value="all">Sve</TabsTrigger>
             <TabsTrigger value="priroda">Priroda</TabsTrigger>
@@ -73,26 +96,26 @@ const Activities = () => {
           </TabsList>
           
           <TabsContent value="all" className="space-y-6">
-            <ActivitySection title="Priroda i outdoor" activities={natureActivities} />
-            <ActivitySection title="Kulturni turizam" activities={cultureActivities} />
-            <ActivitySection title="Gastro i agroturizam" activities={gastroActivities} />
-            <ActivitySection title="Wellness i zdravlje" activities={wellnessActivities} />
+            <ActivitySection title="Priroda i outdoor" activities={natureActivities} onSeeAll={() => handleSeeAll("priroda")} onActivityClick={handleActivityClick} />
+            <ActivitySection title="Kulturni turizam" activities={cultureActivities} onSeeAll={() => handleSeeAll("kultura")} onActivityClick={handleActivityClick} />
+            <ActivitySection title="Gastro i agroturizam" activities={gastroActivities} onSeeAll={() => handleSeeAll("gastro")} onActivityClick={handleActivityClick} />
+            <ActivitySection title="Wellness i zdravlje" activities={wellnessActivities} onSeeAll={() => handleSeeAll("wellness")} onActivityClick={handleActivityClick} />
           </TabsContent>
           
           <TabsContent value="priroda">
-            <ActivitySection title="Priroda i outdoor" activities={natureActivities} />
+            <ActivitySection title="Priroda i outdoor" activities={natureActivities} onSeeAll={() => handleSeeAll("priroda")} onActivityClick={handleActivityClick} />
           </TabsContent>
           
           <TabsContent value="kultura">
-            <ActivitySection title="Kulturni turizam" activities={cultureActivities} />
+            <ActivitySection title="Kulturni turizam" activities={cultureActivities} onSeeAll={() => handleSeeAll("kultura")} onActivityClick={handleActivityClick} />
           </TabsContent>
           
           <TabsContent value="gastro">
-            <ActivitySection title="Gastro i agroturizam" activities={gastroActivities} />
+            <ActivitySection title="Gastro i agroturizam" activities={gastroActivities} onSeeAll={() => handleSeeAll("gastro")} onActivityClick={handleActivityClick} />
           </TabsContent>
           
           <TabsContent value="wellness">
-            <ActivitySection title="Wellness i zdravlje" activities={wellnessActivities} />
+            <ActivitySection title="Wellness i zdravlje" activities={wellnessActivities} onSeeAll={() => handleSeeAll("wellness")} onActivityClick={handleActivityClick} />
           </TabsContent>
         </Tabs>
       </div>
@@ -100,14 +123,24 @@ const Activities = () => {
   );
 };
 
-const ActivitySection = ({ title, activities }: { title: string, activities: typeof activities }) => {
+interface ActivitySectionProps {
+  title: string;
+  activities: Activity[];
+  onSeeAll: () => void;
+  onActivityClick: (activity: Activity) => void;
+}
+
+const ActivitySection = ({ title, activities, onSeeAll, onActivityClick }: ActivitySectionProps) => {
   if (activities.length === 0) return null;
   
   return (
     <section className="mb-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold">{title}</h2>
-        <button className="text-sea-DEFAULT text-sm font-medium flex items-center">
+        <button 
+          onClick={onSeeAll}
+          className="text-sea-DEFAULT text-sm font-medium flex items-center hover:text-sea-dark transition-colors"
+        >
           Vidi sve
           <ChevronRight size={16} />
         </button>
@@ -115,7 +148,11 @@ const ActivitySection = ({ title, activities }: { title: string, activities: typ
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {activities.map((activity) => (
-          <Card key={activity.id} className="overflow-hidden border-none shadow-md animate-fade-in">
+          <Card 
+            key={activity.id} 
+            className="overflow-hidden border-none shadow-md animate-fade-in cursor-pointer hover:shadow-lg transition-shadow"
+            onClick={() => onActivityClick(activity)}
+          >
             <div className="relative h-48">
               <img 
                 src={activity.image} 

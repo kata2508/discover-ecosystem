@@ -1,6 +1,8 @@
 
 import { CalendarDays, Calendar, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
+import { useState } from "react";
 
 const weekdays = ["Pon", "Uto", "Sri", "Čet", "Pet", "Sub", "Ned"];
 
@@ -42,6 +44,29 @@ const events = [
 ];
 
 const Events = () => {
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  const handleDateClick = (day: typeof currentWeekDates[0]) => {
+    setSelectedDate(day.date);
+    if (day.events > 0) {
+      toast.info(`Odabrani datum: ${day.date}.${day.month}. - ${day.events} događaja`);
+    } else {
+      toast.info(`Nema događaja na datum ${day.date}.${day.month}.`);
+    }
+  };
+
+  const handleEventClick = (event: typeof events[0]) => {
+    toast.success(`Detalji događaja: ${event.title}`);
+  };
+
+  const handleCalendarClick = () => {
+    toast.info("Otvaranje kalendara");
+  };
+
+  const handleWeekNavigation = (direction: "prev" | "next") => {
+    toast.info(`Prikazan ${direction === "prev" ? "prethodni" : "sljedeći"} tjedan`);
+  };
+
   return (
     <div className="pb-20">
       <div className="split-escape-container pt-4">
@@ -50,7 +75,10 @@ const Events = () => {
             <CalendarDays className="mr-2 text-sea-DEFAULT" size={24} />
             Događaji
           </h1>
-          <button className="text-sea-DEFAULT flex items-center text-sm">
+          <button 
+            className="text-sea-DEFAULT flex items-center text-sm hover:text-sea-dark transition-colors"
+            onClick={handleCalendarClick}
+          >
             Kalendar
             <Calendar size={16} className="ml-1" />
           </button>
@@ -59,11 +87,17 @@ const Events = () => {
         {/* Week Selector */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
-            <button className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+            <button 
+              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 transition-colors"
+              onClick={() => handleWeekNavigation("prev")}
+            >
               <ChevronLeft size={20} />
             </button>
             <h2 className="text-sm font-medium">Ožujak 2023</h2>
-            <button className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+            <button 
+              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 transition-colors"
+              onClick={() => handleWeekNavigation("next")}
+            >
               <ChevronRight size={20} />
             </button>
           </div>
@@ -72,11 +106,14 @@ const Events = () => {
             {currentWeekDates.map((day) => (
               <button
                 key={day.date}
-                className={`flex flex-col items-center p-2 rounded-lg ${
-                  day.events > 0 
-                    ? "bg-sea-light text-white" 
-                    : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
+                className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
+                  selectedDate === day.date
+                    ? "bg-sea-DEFAULT text-white" 
+                    : day.events > 0 
+                      ? "bg-sea-light text-white hover:bg-sea-light/90" 
+                      : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
                 }`}
+                onClick={() => handleDateClick(day)}
               >
                 <span className="text-xs">{day.day}</span>
                 <span className="text-lg font-bold">{day.date}</span>
@@ -93,7 +130,11 @@ const Events = () => {
         {/* Events List */}
         <div className="space-y-4">
           {events.map((event) => (
-            <Card key={event.id} className="overflow-hidden border-none shadow-md animate-fade-in">
+            <Card 
+              key={event.id} 
+              className="overflow-hidden border-none shadow-md animate-fade-in hover:shadow-lg cursor-pointer transition-shadow"
+              onClick={() => handleEventClick(event)}
+            >
               <div className="md:flex">
                 <div className="md:w-1/3 h-48 md:h-auto">
                   <img 
@@ -112,7 +153,13 @@ const Events = () => {
                     <MapPin size={16} className="mr-2" />
                     <span>{event.location}</span>
                   </div>
-                  <button className="bg-sea-DEFAULT text-white px-4 py-2 rounded-full text-sm font-medium">
+                  <button 
+                    className="bg-sea-DEFAULT text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-sea-dark active:bg-sea-dark/90 transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toast.success(`Otvaranje detalja: ${event.title}`);
+                    }}
+                  >
                     Detalji događaja
                   </button>
                 </div>
