@@ -8,6 +8,7 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Explore from "./pages/Explore";
 import Activities from "./pages/Activities";
+import ActivityDetail from "./pages/ActivityDetail";
 import Events from "./pages/Events";
 import Interests from "./pages/Interests";
 import Profile from "./pages/Profile";
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/" element={<Home />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/activities" element={<Activities />} />
+            <Route path="/activities/:id" element={<ActivityDetail />} />
             <Route path="/events" element={<Events />} />
             <Route path="/interests" element={<Interests />} />
             <Route path="/profile" element={<Profile />} />

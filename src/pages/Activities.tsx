@@ -4,8 +4,9 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-type Activity = {
+export type Activity = {
   id: number;
   title: string;
   image: string;
@@ -15,7 +16,7 @@ type Activity = {
   rating: number;
 };
 
-const activities: Activity[] = [
+export const activities: Activity[] = [
   {
     id: 1,
     title: "Planinarenje na Mosor",
@@ -71,6 +72,7 @@ const wellnessActivities = activities.filter(a => a.category === "wellness");
 
 const Activities = () => {
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const navigate = useNavigate();
 
   const handleSeeAll = (category: string) => {
     setActiveCategory(category);
@@ -78,7 +80,7 @@ const Activities = () => {
   };
 
   const handleActivityClick = (activity: Activity) => {
-    toast.success(`Odabrali ste: ${activity.title}`);
+    navigate(`/activities/${activity.id}`);
   };
 
   return (
